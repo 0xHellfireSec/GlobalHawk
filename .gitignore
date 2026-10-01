@@ -1,0 +1,16 @@
+# 构建产物（发布时由 build-release.sh / CI 生成）
+release/
+build/bin/
+build/*.app
+*.dmg
+*.zip
+*.exe
+
+# 系统文件
+.DS_Store
+
+# 本地临时文件
+verify_tmp.go
+
+# 本地个人工具（含机器特定路径，不入库）
+bump-version.sh

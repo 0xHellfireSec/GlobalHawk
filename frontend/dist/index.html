@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>全球鹰 GlobalHawk</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">🦅 全球鹰 <span class="ver">GlobalHawk v1.0.0</span></div>
+    <div class="author">Author：0xHellfireSec</div>
+</header>
+
+<nav class="tabs" id="tabs">
+    <button data-tab="syntax">语法</button>
+    <button data-tab="fofa" class="active">FOFA</button>
+    <button data-tab="hunter">Hunter</button>
+    <button data-tab="shodan">Shodan</button>
+    <button data-tab="quake">Quake</button>
+    <button data-tab="zoomeye">Zoomeye</button>
+    <button data-tab="censys">Censys</button>
+    <button data-tab="config">配置</button>
+</nav>
+
+<main>
+    <!-- 语法 -->
+    <section id="tab-syntax" class="page">
+        <div class="subtabs" id="syntaxTabs">
+            <button data-syn="FOFA" class="active">FOFA语法</button>
+            <button data-syn="Hunter">Hunter语法</button>
+            <button data-syn="Shodan">Shodan语法</button>
+            <button data-syn="Quake">Quake语法</button>
+            <button data-syn="ZoomEye">Zoomeye语法</button>
+            <button data-syn="Censys">Censys语法</button>
+        </div>
+        <div class="syntax-wrap">
+            <table id="syntaxContent" class="syntax-table"></table>
+        </div>
+    </section>
+
+    <!-- FOFA -->
+    <section id="tab-fofa" class="page active">
+        <div class="toolbar">
+            <span class="lbl">FOFA语法：</span>
+            <span class="history-wrap">
+                <input id="fofa_search" class="txt grow" placeholder="请输入FOFA语法" spellcheck="false">
+            </span>
+            <span class="lbl">条数：</span>
+            <select id="fofa_num">
+                <option>100</option><option>500</option><option>1000</option>
+                <option>5000</option><option selected>10000</option>
+            </select>
+            <button id="fofa_btn" class="btn primary">FOFA查询</button>
+            <button id="fofa_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="fofa_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="fofa_clear" class="btn">清空结果</button>
+            <button id="fofa_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats"><span>搜索结果：<b id="fofa_count">0</b> 条</span></div>
+        <div class="table-box"><table id="fofa_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="fofa_log" class="log"></div></div>
+    </section>
+
+    <!-- Hunter -->
+    <section id="tab-hunter" class="page">
+        <div class="toolbar">
+            <span class="lbl">Hunter语法：</span>
+            <span class="history-wrap">
+                <input id="hunter_search" class="txt grow" placeholder="请输入Hunter语法" spellcheck="false">
+            </span>
+            <span class="lbl">查询条数：</span>
+            <select id="hunter_size">
+                <option>10</option><option>20</option><option>50</option><option selected>100</option>
+                <option value="all">全部（自动翻页）</option>
+            </select>
+            <span class="lbl">资产类型：</span>
+            <select id="hunter_web">
+                <option value="1">web资产</option>
+                <option value="2">非web资产</option>
+                <option value="3" selected>全部</option>
+            </select>
+            <button id="hunter_btn" class="btn primary">鹰图查询</button>
+            <button id="hunter_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="hunter_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="hunter_clear" class="btn">清空结果</button>
+            <button id="hunter_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats">
+            <span>搜索结果：<b id="hunter_count">0</b> 条</span>
+            <span class="quota" id="hunter_consume">消耗积分：</span>
+            <span class="quota" id="hunter_rest">剩余积分：</span>
+        </div>
+        <div class="table-box"><table id="hunter_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="hunter_log" class="log"></div></div>
+    </section>
+
+    <!-- Shodan -->
+    <section id="tab-shodan" class="page">
+        <div class="toolbar">
+            <span class="lbl">搜索方法：</span>
+            <select id="shodan_mode"><option value="HOST" selected>HOST</option><option value="IP">IP</option></select>
+            <span class="history-wrap">
+                <input id="shodan_search" class="txt grow" placeholder="请输入shodan语法或IP" spellcheck="false">
+            </span>
+            <span class="lbl">查询条数：</span>
+            <select id="shodan_size">
+                <option selected>100</option>
+                <option value="all">全部（自动翻页）</option>
+            </select>
+            <button id="shodan_btn" class="btn primary">shodan查询</button>
+            <button id="shodan_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="shodan_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="shodan_clear" class="btn">清空结果</button>
+            <button id="shodan_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats"><span>搜索结果：<b id="shodan_count">0</b> 条</span></div>
+        <div class="table-box"><table id="shodan_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="shodan_log" class="log"></div></div>
+    </section>
+
+    <!-- Quake -->
+    <section id="tab-quake" class="page">
+        <div class="toolbar">
+            <span class="lbl">Quake语法：</span>
+            <span class="history-wrap">
+                <input id="quake_search" class="txt grow" placeholder="请输入Quake语法" spellcheck="false">
+            </span>
+            <span class="lbl">查询条数：</span>
+            <select id="quake_size">
+                <option value="all" selected>全部（自动翻页拉取）</option>
+                <option>100</option><option>200</option><option>500</option>
+            </select>
+            <button id="quake_btn" class="btn primary">Quake查询</button>
+            <button id="quake_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="quake_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="quake_clear" class="btn">清空结果</button>
+            <button id="quake_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats">
+            <span>搜索结果：<b id="quake_count">0</b> 条</span>
+            <span class="quota" id="quake_credit">本月剩余积分：</span>
+        </div>
+        <div class="table-box"><table id="quake_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="quake_log" class="log"></div></div>
+    </section>
+
+    <!-- Zoomeye -->
+    <section id="tab-zoomeye" class="page">
+        <div class="toolbar">
+            <span class="lbl">Zoomeye语法：</span>
+            <span class="history-wrap">
+                <input id="zoomeye_search" class="txt grow" placeholder="请输入Zoomeye语法" spellcheck="false">
+            </span>
+            <span class="lbl">查询条数：</span>
+            <select id="zoomeye_size">
+                <option selected>20</option>
+                <option value="all">全部（自动翻页）</option>
+            </select>
+            <button id="zoomeye_btn" class="btn primary">Zoomeye查询</button>
+            <button id="zoomeye_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="zoomeye_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="zoomeye_clear" class="btn">清空结果</button>
+            <button id="zoomeye_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats">
+            <span>搜索结果：<b id="zoomeye_count">0</b> 条</span>
+            <span class="quota" id="zoomeye_quota">本月剩余积分：</span>
+        </div>
+        <div class="table-box"><table id="zoomeye_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="zoomeye_log" class="log"></div></div>
+    </section>
+
+    <!-- Censys -->
+    <section id="tab-censys" class="page">
+        <div class="toolbar">
+            <span class="lbl">搜索方法：</span>
+            <select id="censys_mode"><option value="Hosts" selected>Hosts</option><option value="IP">IP</option></select>
+            <span class="lbl">查询条数：</span>
+            <select id="censys_size">
+                <option selected>100</option>
+                <option value="all">全部（自动翻页）</option>
+            </select>
+            <span class="history-wrap">
+                <input id="censys_search" class="txt grow" placeholder="请输入Censys语法或IP" spellcheck="false">
+            </span>
+            <button id="censys_btn" class="btn primary">Censys查询</button>
+            <button id="censys_prev" class="btn">上一页</button>
+            <button id="censys_next" class="btn">下一页</button>
+            <button id="censys_export" class="btn">导出数据</button>
+            <span class="lbl">去重：</span>
+            <select id="censys_dedup">
+                <option value="off" selected>关闭</option>
+                <option value="ip">按IP</option>
+                <option value="ipport">按IP+端口</option>
+            </select>
+            <button id="censys_clear" class="btn">清空结果</button>
+            <button id="censys_clearlog" class="btn">清空日志</button>
+        </div>
+        <div class="stats"><span>搜索结果：<b id="censys_count">0</b> 条</span></div>
+        <div class="table-box"><table id="censys_table"></table></div>
+        <div class="logbox"><span class="lbl">日志：</span><div id="censys_log" class="log"></div></div>
+    </section>
+
+    <!-- 配置 -->
+    <section id="tab-config" class="page">
+        <div class="config-grid">
+            <label>FOFA Email（可选）</label><input id="cfg_fofa_email.your_email" class="txt">
+            <label>FOFA Key</label><input id="cfg_fofa_key.fofa_key" class="txt">
+            <label>Hunter API Key</label><input id="cfg_hunter_api.your_api" class="txt">
+            <label>Shodan API Key</label><input id="cfg_shodan_api.your_api" class="txt">
+            <label>Quake API Key</label><input id="cfg_quake_api.your_api" class="txt">
+            <label>Zoomeye API Key</label><input id="cfg_zoomeye_api.your_zoomeye_api" class="txt">
+            <label>Censys UID</label><input id="cfg_censys_uid.censys_uid" class="txt">
+            <label>Censys Secret</label><input id="cfg_censys_secret.censys_secret" class="txt">
+        </div>
+        <div class="config-actions">
+            <button id="cfg_save" class="btn primary">保存配置</button>
+            <span id="cfg_msg" class="cfg-msg"></span>
+        </div>
+        <p class="cfg-note">配置保存在 ~/config.ini（与原版互通）；API Key 请在各平台官网获取。</p>
+    </section>
+</main>
+
+<script src="src/syntax.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>

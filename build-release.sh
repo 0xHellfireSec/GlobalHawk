@@ -73,10 +73,10 @@ make_dmg() { # $1=staging 目录  $2=输出dmg（含 Retina @2x 背景）
         | perl -pe "s/APPLICATION_CLAUSE//g" \
         | perl -pe "s/HIDING_CLAUSE//" \
         > "$ASCRIPT"
-    sleep 2
+    sleep 3
     /usr/bin/osascript "$ASCRIPT" "GlobalHawk-tmp" "$MNT" >/dev/null
-    sleep 2
-    hdiutil detach "$MNT" >/dev/null
+    sleep 3
+    hdiutil detach "$MNT" -force >/dev/null 2>&1 || hdiutil detach "$MNT" >/dev/null
     hdiutil convert "$TMPDMG" -format UDZO -imagekey zlib-level=9 -o "$OUTDMG" >/dev/null
     rm -f "$TMPDMG"
     hdiutil verify "$OUTDMG" >/dev/null

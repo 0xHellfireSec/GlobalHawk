@@ -43,7 +43,11 @@ make_dmg() { # $1=staging 目录  $2=输出dmg（含 Retina @2x 背景）
     local STAGE="$1" OUTDMG="$2"
     local TMPDMG="build/dmg-tmp.dmg"
     local MNT="/Volumes/GlobalHawk-tmp"
-    local TEMPLATE="/opt/homebrew/Cellar/create-dmg/1.3.0/share/create-dmg/support/template.applescript"
+    # 模板已固化到仓库（源自 create-dmg, BSD）；本机若装了 create-dmg 优先用其模板
+    local TEMPLATE="build/dmg-template.applescript"
+    if [ -f "/opt/homebrew/Cellar/create-dmg/1.3.0/share/create-dmg/support/template.applescript" ]; then
+        TEMPLATE="/opt/homebrew/Cellar/create-dmg/1.3.0/share/create-dmg/support/template.applescript"
+    fi
     rm -f "$TMPDMG"
     hdiutil create -size 64m -fs HFS+J -volname "GlobalHawk-tmp" "$TMPDMG" >/dev/null
     hdiutil attach "$TMPDMG" -nobrowse -mountpoint "$MNT" >/dev/null

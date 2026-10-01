@@ -42,15 +42,17 @@ PLIST
 make_dmg() { # $1=staging 目录  $2=输出dmg（含 Retina @2x 背景）
     local STAGE="$1" OUTDMG="$2"
     local TMPDMG="build/dmg-tmp.dmg"
-    local MNT="/Volumes/GlobalHawk-tmp"
+    local VOL="GlobalHawk-tmp-$$"          # 每次唯一卷名，杜绝叠挂
+    local MNT="/Volumes/$VOL"
     # 模板已固化到仓库（源自 create-dmg, BSD）；本机若装了 create-dmg 优先用其模板
     local TEMPLATE="build/dmg-template.applescript"
     if [ -f "/opt/homebrew/Cellar/create-dmg/1.3.0/share/create-dmg/support/template.applescript" ]; then
         TEMPLATE="/opt/homebrew/Cellar/create-dmg/1.3.0/share/create-dmg/support/template.applescript"
     fi
     rm -f "$TMPDMG"
-    hdiutil create -size 64m -fs HFS+J -volname "GlobalHawk-tmp" "$TMPDMG" >/dev/null
+    hdiutil create -size 64m -fs HFS+J -volname "$VOL" "$TMPDMG" >/dev/null
     hdiutil attach "$TMPDMG" -nobrowse -mountpoint "$MNT" >/dev/null
+    touch "$MNT/.metadata_never_index"   # 禁止 Spotlight 索引，避免卸载被占用
 
     ditto "$STAGE/GlobalHawk.app" "$MNT/GlobalHawk.app"
     ln -s /Applications "$MNT/Applications"
@@ -73,10 +75,15 @@ make_dmg() { # $1=staging 目录  $2=输出dmg（含 Retina @2x 背景）
         | perl -pe "s/APPLICATION_CLAUSE//g" \
         | perl -pe "s/HIDING_CLAUSE//" \
         > "$ASCRIPT"
-    sleep 3
-    /usr/bin/osascript "$ASCRIPT" "GlobalHawk-tmp" "$MNT" >/dev/null
-    sleep 3
-    hdiutil detach "$MNT" -force >/dev/null 2>&1 || hdiutil detach "$MNT" >/dev/null
+    sleep 5
+    /usr/bin/osascript "$ASCRIPT" "$VOL" "$MNT" >/dev/null
+    # 卸载重试（Finder/Spotlight 可能短时占用卷）
+    local n=0 ok=0
+    while [ $n -lt 6 ]; do
+        if hdiutil detach "$MNT" >/dev/null 2>&1; then ok=1; break; fi
+        n=$((n+1)); sleep 3
+    done
+    [ $ok -eq 1 ] || { echo "DMG 卸载失败"; hdiutil detach "$MNT" -force >/dev/null 2>&1; exit 1; }
     hdiutil convert "$TMPDMG" -format UDZO -imagekey zlib-level=9 -o "$OUTDMG" >/dev/null
     rm -f "$TMPDMG"
     hdiutil verify "$OUTDMG" >/dev/null

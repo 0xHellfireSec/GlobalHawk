@@ -5,6 +5,16 @@
 
 > 当前版本：v1.0.0 ｜ Author：**0xHellfireSec** ｜ 本目录构建目标：macOS arm64 (Apple Silicon)
 
+## 界面预览
+
+**六引擎统一查询**（以 Quake 为例：全量自动翻页拉取、本地分页、去重、表头排序）
+
+<img src="docs/screenshot-quake.png" width="960" alt="Quake 查询界面">
+
+**内置六引擎语法速查**
+
+<img src="docs/screenshot-syntax.png" width="960" alt="语法参考">
+
 ## 功能
 
 | 功能 | 说明 |
